@@ -25,12 +25,13 @@ type Config struct {
 	Auth    bool
 	NoSniff bool
 	Cors    CorsCfg
-	Users   map[string]*User
+	// Users   map[string]*User
 }
 
 // ServeHTTP determines if the request is for this plugin, and if all prerequisites are met.
 func (c *Config) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	u := c.User
+	db := NewMockDB()
 	requestOrigin := r.Header.Get("Origin")
 
 	// Add CORS headers before any operation so even on a 401 unauthorized status, CORS will work.
@@ -89,7 +90,9 @@ func (c *Config) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		user, ok := c.Users[username]
+		// TODO: get from database
+		user, ok := db.GetUser(username)
+		// user, ok := c.Users[username]
 		if !ok {
 			http.Error(w, "Not authorized", 401)
 			return
@@ -110,7 +113,9 @@ func (c *Config) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// plugin implementation.
 		username, _, ok := r.BasicAuth()
 		if ok {
-			if user, ok := c.Users[username]; ok {
+			// TODO: get from database
+			// if user, ok := c.Users[username]; ok {
+			if user, ok := db.GetUser(username); ok {
 				u = user
 			}
 		}

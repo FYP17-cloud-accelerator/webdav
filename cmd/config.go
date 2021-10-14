@@ -20,10 +20,10 @@ func parseRules(raw []interface{}, defaultModify bool) []*lib.Rule {
 	for _, v := range raw {
 		if r, ok := v.(map[interface{}]interface{}); ok {
 			rule := &lib.Rule{
-				Regex: false,
-				Allow: false,
+				Regex:  false,
+				Allow:  false,
 				Modify: defaultModify,
-				Path:  "",
+				Path:   "",
 			}
 
 			if regex, ok := r["regex"].(bool); ok {
@@ -73,7 +73,7 @@ func loadFromEnv(v string) (string, error) {
 	return v, nil
 }
 
-func parseUsers(raw []interface{}, c *lib.Config) {
+func parseUsers(raw []interface{}, c *lib.Config, db lib.IDb) {
 	var err error
 	for _, v := range raw {
 		if u, ok := v.(map[interface{}]interface{}); ok {
@@ -130,7 +130,8 @@ func parseUsers(raw []interface{}, c *lib.Config) {
 				LockSystem: webdav.NewMemLS(),
 			}
 
-			c.Users[username] = user
+			// c.Users[username] = user
+			db.AddUser(*user)
 		}
 	}
 }
@@ -176,6 +177,7 @@ func corsProperty(property string, cfg map[string]interface{}) []string {
 }
 
 func readConfig(flags *pflag.FlagSet) *lib.Config {
+	db := lib.NewMockDB()
 	cfg := &lib.Config{
 		User: &lib.User{
 			Scope:  getOpt(flags, "scope"),
@@ -196,7 +198,7 @@ func readConfig(flags *pflag.FlagSet) *lib.Config {
 			Enabled:     false,
 			Credentials: false,
 		},
-		Users: map[string]*lib.User{},
+		// Users: map[string]*lib.User{},
 	}
 
 	rawRules := v.Get("rules")
@@ -206,7 +208,8 @@ func readConfig(flags *pflag.FlagSet) *lib.Config {
 
 	rawUsers := v.Get("users")
 	if users, ok := rawUsers.([]interface{}); ok {
-		parseUsers(users, cfg)
+		log.Println(users)
+		parseUsers(users, cfg, db)
 	}
 
 	rawCors := v.Get("cors")
@@ -214,7 +217,8 @@ func readConfig(flags *pflag.FlagSet) *lib.Config {
 		parseCors(cors, cfg)
 	}
 
-	if len(cfg.Users) != 0 && !cfg.Auth {
+	// if len(cfg.Users) != 0 && !cfg.Auth {
+	if len(db.GetUsers()) != 0 && !cfg.Auth {
 		log.Print("Users will be ignored due to auth=false")
 	}
 
