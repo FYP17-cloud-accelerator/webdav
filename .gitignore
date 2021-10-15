@@ -1,2 +1,4 @@
 dist/
 webdav
+redis-volume/
+config.yaml

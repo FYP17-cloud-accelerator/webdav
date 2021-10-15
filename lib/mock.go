@@ -14,11 +14,11 @@ func (db *mockDB) AddUser(user User) {
 	db.Users[user.Username] = &user
 }
 
-func (db *mockDB) GetUser(username string) (*User, bool) {
+func (db *mockDB) GetUser(username string, c *Config) (*User, bool) {
 	user, ok := db.Users[username]
 	return user, ok
 }
 
-func (db *mockDB) GetUsers() map[string]*User {
-	return db.Users
+func (db *mockDB) GetUserCount() int {
+	return len(db.Users)
 }

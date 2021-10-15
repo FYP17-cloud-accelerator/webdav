@@ -130,7 +130,7 @@ func parseUsers(raw []interface{}, c *lib.Config, db lib.IDb) {
 				LockSystem: webdav.NewMemLS(),
 			}
 
-			// c.Users[username] = user
+			// TODO: c.Users[username] = user
 			db.AddUser(*user)
 		}
 	}
@@ -177,7 +177,8 @@ func corsProperty(property string, cfg map[string]interface{}) []string {
 }
 
 func readConfig(flags *pflag.FlagSet) *lib.Config {
-	db := lib.NewMockDB()
+	// TODO: added here
+	db := lib.NewRedisDb("localhost:6379", 0, 0)
 	cfg := &lib.Config{
 		User: &lib.User{
 			Scope:  getOpt(flags, "scope"),
@@ -208,7 +209,7 @@ func readConfig(flags *pflag.FlagSet) *lib.Config {
 
 	rawUsers := v.Get("users")
 	if users, ok := rawUsers.([]interface{}); ok {
-		log.Println(users)
+		// log.Println(users)
 		parseUsers(users, cfg, db)
 	}
 
@@ -217,8 +218,8 @@ func readConfig(flags *pflag.FlagSet) *lib.Config {
 		parseCors(cors, cfg)
 	}
 
-	// if len(cfg.Users) != 0 && !cfg.Auth {
-	if len(db.GetUsers()) != 0 && !cfg.Auth {
+	// TODO: if len(cfg.Users) != 0 && !cfg.Auth {
+	if db.GetUserCount() != 0 && !cfg.Auth {
 		log.Print("Users will be ignored due to auth=false")
 	}
 

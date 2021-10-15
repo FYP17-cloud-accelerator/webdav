@@ -31,7 +31,8 @@ type Config struct {
 // ServeHTTP determines if the request is for this plugin, and if all prerequisites are met.
 func (c *Config) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	u := c.User
-	db := NewMockDB()
+	// TODO: added here
+	db := NewRedisDb("localhost:6379", 0, 0)
 	requestOrigin := r.Header.Get("Origin")
 
 	// Add CORS headers before any operation so even on a 401 unauthorized status, CORS will work.
@@ -90,9 +91,8 @@ func (c *Config) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// TODO: get from database
-		user, ok := db.GetUser(username)
-		// user, ok := c.Users[username]
+		// TODO: user, ok := c.Users[username]
+		user, ok := db.GetUser(username, c)
 		if !ok {
 			http.Error(w, "Not authorized", 401)
 			return
@@ -113,9 +113,8 @@ func (c *Config) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// plugin implementation.
 		username, _, ok := r.BasicAuth()
 		if ok {
-			// TODO: get from database
-			// if user, ok := c.Users[username]; ok {
-			if user, ok := db.GetUser(username); ok {
+			// TODO: if user, ok := c.Users[username]; ok {
+			if user, ok := db.GetUser(username, c); ok {
 				u = user
 			}
 		}
