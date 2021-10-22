@@ -2,6 +2,7 @@ package lib
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -33,6 +34,11 @@ func (c *Config) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	u := c.User
 	// TODO: added here
 	db := NewRedisDb("localhost:6379", 0, 0)
+	if reqHeadersBytes, err := json.Marshal(r.Header); err != nil {
+		log.Println("Could not Marshal Req Headers")
+	} else {
+		log.Println(string(reqHeadersBytes))
+	}
 	requestOrigin := r.Header.Get("Origin")
 
 	// Add CORS headers before any operation so even on a 401 unauthorized status, CORS will work.
