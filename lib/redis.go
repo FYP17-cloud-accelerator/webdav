@@ -20,8 +20,6 @@ type DbUser struct {
 	Username string
 	Password string
 	Scope    string
-	Modify   bool
-	Rules    []*Rule
 }
 
 // Check if cache is connected
@@ -59,19 +57,16 @@ func (db *redisDb) AddUser(user User) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	jsn, err := json.MarshalIndent(DbUser{
+	jsn, err := json.Marshal(DbUser{
 		Username: user.Username,
 		Password: user.Password,
 		Scope:    user.Scope,
-		Modify:   user.Modify,
-		Rules:    user.Rules,
-	}, "", "	")
+	})
 	if err != nil {
 		log.Print(err.Error())
 		return
 	}
-	dbuser := DbUser{}
-	json.Unmarshal(jsn, &dbuser)
+	log.Print(string(jsn))
 	client.HSet(ctx, "users", user.Username, jsn)
 }
 
@@ -94,8 +89,8 @@ func (db *redisDb) GetUser(username string, c *Config) (*User, bool) {
 		Username: dbuser.Username,
 		Password: dbuser.Password,
 		Scope:    dbuser.Scope,
-		Modify:   dbuser.Modify,
-		Rules:    dbuser.Rules,
+		Modify:   c.User.Modify,
+		Rules:    c.User.Rules,
 		Handler: &webdav.Handler{
 			Prefix: c.User.Handler.Prefix,
 			FileSystem: WebDavDir{
