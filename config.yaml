@@ -1,6 +1,6 @@
 # Server related settings
 address: 0.0.0.0
-port: 1901
+port: 1900
 auth: true
 tls: false
 cert: cert.pem
@@ -8,7 +8,7 @@ key: key.pem
 prefix: /
 
 # Default user settings (will be merged)
-scope: .
+scope: /home/evindu/Seadrive
 modify: true
 rules: []
 

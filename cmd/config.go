@@ -207,11 +207,11 @@ func readConfig(flags *pflag.FlagSet) *lib.Config {
 		cfg.User.Rules = parseRules(rules, cfg.User.Modify)
 	}
 
-	rawUsers := v.Get("users")
-	if users, ok := rawUsers.([]interface{}); ok {
-		// log.Println(users)
-		parseUsers(users, cfg, db)
-	}
+	// rawUsers := v.Get("users")
+	// if users, ok := rawUsers.([]interface{}); ok {
+	// 	// log.Println(users)
+	// 	parseUsers(users, cfg, db)
+	// }
 
 	rawCors := v.Get("cors")
 	if cors, ok := rawCors.(map[string]interface{}); ok {
