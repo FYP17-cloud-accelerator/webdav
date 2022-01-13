@@ -32,7 +32,7 @@ type Config struct {
 func (c *Config) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	u := c.User
 	// TODO: added here
-	db := NewRedisDb("localhost:6379", 0, 0)
+	db := NewSqlDb("localhost:3308", "syncbox", "root", "secret")
 	requestOrigin := r.Header.Get("Origin")
 
 	// Add CORS headers before any operation so even on a 401 unauthorized status, CORS will work.
@@ -156,6 +156,9 @@ func (c *Config) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				r.Header.Add("Depth", "1")
 			}
 		}
+		logAccess := NewLogAccess(u.Username, r.URL.Path, info.ModTime(), info.Size())
+		// db.AddLog(logAccess)
+		log.Println("username:", logAccess.Username, " size:", logAccess.Size, ", filename:", logAccess.FileName, ", extension:", logAccess.Extension, ", modifiedTime:", logAccess.ModTime, ", size:", logAccess.Size)
 	}
 
 	// Runs the WebDAV.

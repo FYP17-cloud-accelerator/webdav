@@ -178,7 +178,7 @@ func corsProperty(property string, cfg map[string]interface{}) []string {
 
 func readConfig(flags *pflag.FlagSet) *lib.Config {
 	// TODO: added here
-	db := lib.NewRedisDb("localhost:6379", 0, 0)
+	db := lib.NewSqlDb("localhost:3308", "syncbox", "root", "secret")
 	cfg := &lib.Config{
 		User: &lib.User{
 			Scope:  getOpt(flags, "scope"),
