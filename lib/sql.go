@@ -88,3 +88,16 @@ func (db *sqlDb) GetUserCount() int {
 	}
 	return count
 }
+
+func (db *sqlDb) AddLog(logAccess *LogAccess) error {
+	client, err := db.getClient()
+	if err != nil {
+		return err
+	}
+	defer client.Close()
+
+	_, err = client.Exec(
+		"INSERT INTO logs(user_id, filename, path, extension, access_time, mod_time, size) VALUES((SELECT user_id FROM user WHERE username = ?), ?, ?, ?, ?, ?, ?)",
+		logAccess.Username, logAccess.FileName, logAccess.Path, logAccess.Extension, logAccess.AccessTime, logAccess.ModTime, logAccess.Size)
+	return err
+}

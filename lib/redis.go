@@ -3,6 +3,7 @@ package lib
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"log"
 	"time"
 
@@ -117,4 +118,8 @@ func (db *redisDb) GetUserCount() int {
 		return 0
 	}
 	return len(result)
+}
+
+func (db *redisDb) AddLog(logAccess *LogAccess) error {
+	return errors.New("not implemented")
 }

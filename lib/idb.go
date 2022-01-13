@@ -4,4 +4,5 @@ type IDb interface {
 	AddUser(user User)
 	GetUser(username string, c *Config) (*User, bool)
 	GetUserCount() int
+	AddLog(logAccess *LogAccess) error
 }
