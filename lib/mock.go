@@ -28,3 +28,7 @@ func (db *mockDB) GetUserCount() int {
 func (db *mockDB) AddLog(logAccess *LogAccess) error {
 	return errors.New("not implemented")
 }
+
+func (db *mockDB) UpdateAccess(logAccess *LogAccess) error {
+	return errors.New("not implemented")
+}

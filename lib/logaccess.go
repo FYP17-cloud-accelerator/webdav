@@ -9,6 +9,7 @@ type LogAccess struct {
 	Username   string
 	FileName   string
 	Path       string
+	FullPath   string
 	Extension  string
 	AccessTime time.Time
 	ModTime    time.Time
@@ -28,6 +29,7 @@ func NewLogAccess(username string, full_path string, mod_time time.Time, size in
 		AccessTime: time.Now(),
 		ModTime:    mod_time,
 		Path:       path,
+		FullPath:   full_path,
 		Size:       size,
 	}
 }

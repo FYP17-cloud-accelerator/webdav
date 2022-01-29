@@ -158,6 +158,7 @@ func (c *Config) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		logAccess := NewLogAccess(u.Username, r.URL.Path, info.ModTime(), info.Size())
 		// db.AddLog(logAccess)
+		db.UpdateAccess(logAccess)
 		log.Println("username:", logAccess.Username, " size:", logAccess.Size, ", filename:", logAccess.FileName, ", extension:", logAccess.Extension, ", modifiedTime:", logAccess.ModTime, ", size:", logAccess.Size)
 	}
 

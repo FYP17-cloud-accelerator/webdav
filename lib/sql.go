@@ -101,3 +101,16 @@ func (db *sqlDb) AddLog(logAccess *LogAccess) error {
 		logAccess.Username, logAccess.FileName, logAccess.Path, logAccess.Extension, logAccess.AccessTime, logAccess.ModTime, logAccess.Size)
 	return err
 }
+
+func (db *sqlDb) UpdateAccess(logAccess *LogAccess) error {
+	client, err := db.getClient()
+	if err != nil {
+		return err
+	}
+	defer client.Close()
+
+	_, err = client.Exec(
+		"REPLACE INTO logs(user_id, full_path, access_time) VALUES((SELECT user_id FROM user WHERE username = ?), ?, ?)",
+		logAccess.Username, logAccess.FullPath, logAccess.AccessTime)
+	return err
+}

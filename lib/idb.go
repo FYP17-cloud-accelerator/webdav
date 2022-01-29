@@ -5,4 +5,11 @@ type IDb interface {
 	GetUser(username string, c *Config) (*User, bool)
 	GetUserCount() int
 	AddLog(logAccess *LogAccess) error
+	UpdateAccess(logAccess *LogAccess) error
+}
+
+type DbUser struct {
+	Username string
+	Password string
+	Scope    string
 }
