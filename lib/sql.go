@@ -52,7 +52,7 @@ func (db *sqlDb) GetUser(username string, c *Config) (*User, bool) {
 	defer client.Close()
 
 	dbuser := DbUser{}
-	err = client.QueryRow("SELECT username, password, scope FROM user WHERE username = ?", username).Scan(&dbuser.Username, &dbuser.Password, &dbuser.Scope)
+	err = client.QueryRow("SELECT username, password, scope FROM users WHERE username = ?", username).Scan(&dbuser.Username, &dbuser.Password, &dbuser.Scope)
 	if err != nil {
 		return nil, true
 	}
@@ -82,7 +82,7 @@ func (db *sqlDb) GetUserCount() int {
 	defer client.Close()
 
 	var count int
-	err = client.QueryRow("SELECT COUNT(*) FROM user").Scan(&count)
+	err = client.QueryRow("SELECT COUNT(*) FROM users").Scan(&count)
 	if err != nil {
 		return 0
 	}
@@ -97,7 +97,7 @@ func (db *sqlDb) AddLog(logAccess *LogAccess) error {
 	defer client.Close()
 
 	_, err = client.Exec(
-		"INSERT INTO logs(user_id, filename, path, extension, access_time, mod_time, size) VALUES((SELECT user_id FROM user WHERE username = ?), ?, ?, ?, ?, ?, ?)",
+		"INSERT INTO logs(user_id, filename, path, extension, access_time, mod_time, size) VALUES((SELECT user_id FROM users WHERE username = ?), ?, ?, ?, ?, ?, ?)",
 		logAccess.Username, logAccess.FileName, logAccess.Path, logAccess.Extension, logAccess.AccessTime, logAccess.ModTime, logAccess.Size)
 	return err
 }
@@ -110,7 +110,7 @@ func (db *sqlDb) UpdateAccess(logAccess *LogAccess) error {
 	defer client.Close()
 
 	_, err = client.Exec(
-		"REPLACE INTO logs(user_id, path_hash, full_path, access_time) VALUES((SELECT user_id FROM user WHERE username = ?), MD5(?), ?, ?)",
+		"REPLACE INTO logs(user_id, path_hash, full_path, access_time) VALUES((SELECT user_id FROM users WHERE username = ?), MD5(?), ?, ?)",
 		logAccess.Username, logAccess.FullPath, logAccess.FullPath, logAccess.AccessTime)
 	return err
 }

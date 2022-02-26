@@ -1,0 +1,41 @@
+address: 0.0.0.0
+port: 1902
+auth: true
+tls: false
+cert: cert.pem
+key: key.pem
+prefix: /
+scope: .
+modify: true
+rules: []
+cors:
+  enabled: true
+  credentials: true
+  allowed_headers:
+    - Depth
+  allowed_hosts:
+    - http://localhost:8080
+  allowed_methods:
+    - GET
+  exposed_headers:
+    - Content-Length
+    - Content-Range
+users:
+  - username: admin
+    password: admin
+  - username: test4@email.com
+    password: '{bcrypt}$2b$10$Z4Qqdqjc5e.I5ho8u4J7GOfONzMDJSsNfuD/OzIBqzotfvRPBqrDm'
+  - username: basic
+    password: basic
+    modify: false
+    rules:
+      - regex: false
+        allow: false
+        path: /some/file
+      - path: /public/access/
+        modify: true
+  - username: test2@email.com
+    password: '{bcrypt}$2b$10$LEHR3ENex/z88TcuXJFfE.nV5NaPwEwSHDf7P7p45sBG9q4DUb5xK'
+    rules:
+      path: /home/melangakasun/Desktop/FYP/test/test2@email.com/data
+      modify: true

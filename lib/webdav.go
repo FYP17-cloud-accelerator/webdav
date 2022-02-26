@@ -32,7 +32,7 @@ type Config struct {
 func (c *Config) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	u := c.User
 	// TODO: added here
-	db := NewSqlDb("localhost:3308", "syncbox", "root", "secret")
+	db := NewSqlDb("localhost:3306", "syncbox", "syncbox", "Secret@123")
 	requestOrigin := r.Header.Get("Origin")
 
 	// Add CORS headers before any operation so even on a 401 unauthorized status, CORS will work.
