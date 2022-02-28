@@ -22,11 +22,12 @@ func NewLogAccess(username string, full_path string, mod_time time.Time, size in
 	path := strings.Replace(full_path, filename, "", 1)
 	res = strings.Split(filename, ".")
 	extension := res[len(res)-1]
+	loc, _ := time.LoadLocation("Asia/Colombo")
 	return &LogAccess{
 		Username:   username,
 		FileName:   filename,
 		Extension:  extension,
-		AccessTime: time.Now(),
+		AccessTime: time.Now().In(loc),
 		ModTime:    mod_time,
 		Path:       path,
 		FullPath:   full_path,
