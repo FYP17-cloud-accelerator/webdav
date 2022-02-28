@@ -110,7 +110,8 @@ func (db *sqlDb) UpdateAccess(logAccess *LogAccess) error {
 	defer client.Close()
 
 	_, err = client.Exec(
-		"REPLACE INTO files(user_id, path_hash, full_path, access_time) VALUES((SELECT user_id FROM user WHERE username = ?), MD5(?), ?, ?)",
+		"REPLACE INTO files(user_id, path_hash, full_path, access_time) VALUES((SELECT user_id FROM users WHERE username = ?), MD5(?), ?, ?)",
 		logAccess.Username, logAccess.FullPath, logAccess.FullPath, logAccess.AccessTime)
+	log.Println(err)
 	return err
 }
