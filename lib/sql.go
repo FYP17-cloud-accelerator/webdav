@@ -33,12 +33,14 @@ func (db *sqlDb) getClient() (*sql.DB, error) {
 func (db *sqlDb) AddUser(user User) {
 	client, err := db.getClient()
 	if err != nil {
+		log.Print(err)
 		return
 	}
 	defer client.Close()
 
 	_, err = client.Exec("INSERT INTO users(username, password, scope) VALUES(?, ?, ?)", user.Username, user.Password, user.Scope)
 	if err != nil {
+		log.Print(err)
 		return
 	}
 	log.Println(user)
@@ -47,6 +49,7 @@ func (db *sqlDb) AddUser(user User) {
 func (db *sqlDb) GetUser(username string, c *Config) (*User, bool) {
 	client, err := db.getClient()
 	if err != nil {
+		log.Print(err)
 		return nil, true
 	}
 	defer client.Close()
@@ -54,6 +57,7 @@ func (db *sqlDb) GetUser(username string, c *Config) (*User, bool) {
 	dbuser := DbUser{}
 	err = client.QueryRow("SELECT username, password, scope FROM users WHERE username = ?", username).Scan(&dbuser.Username, &dbuser.Password, &dbuser.Scope)
 	if err != nil {
+		log.Print(err)
 		return nil, true
 	}
 	user := User{
@@ -77,6 +81,7 @@ func (db *sqlDb) GetUser(username string, c *Config) (*User, bool) {
 func (db *sqlDb) GetUserCount() int {
 	client, err := db.getClient()
 	if err != nil {
+		log.Print(err)
 		return 0
 	}
 	defer client.Close()
@@ -84,6 +89,7 @@ func (db *sqlDb) GetUserCount() int {
 	var count int
 	err = client.QueryRow("SELECT COUNT(*) FROM users").Scan(&count)
 	if err != nil {
+		log.Print(err)
 		return 0
 	}
 	return count
@@ -92,6 +98,7 @@ func (db *sqlDb) GetUserCount() int {
 // func (db *sqlDb) AddLog(logAccess *LogAccess) error {
 // 	client, err := db.getClient()
 // 	if err != nil {
+// log.Print(err)
 // 		return err
 // 	}
 // 	defer client.Close()
@@ -105,6 +112,7 @@ func (db *sqlDb) GetUserCount() int {
 func (db *sqlDb) UpdateAccess(logAccess *LogAccess) error {
 	client, err := db.getClient()
 	if err != nil {
+		log.Print(err)
 		return err
 	}
 	defer client.Close()
